@@ -74,6 +74,8 @@ RUN set -ex \
  && chown -R nobody:nobody /var/www/wallabag
 
 VOLUME ["/var/www/wallabag/app/config","/config"]
+VOLUME ["/var/www/wallabag/data","/config/data"]
+VOLUME ["/var/www/wallabag/web/assets/images","/config/images"]
 EXPOSE 80
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["wallabag"]
