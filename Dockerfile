@@ -1,8 +1,21 @@
-FROM alpine:latest
+FROM alpine:edge
 
 LABEL maintainer "Marvin Steadfast <marvin@xsteadfastx.org>"
 
 ARG WALLABAG_VERSION=2.3.6
+
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
+RUN apk --no-cache add shadow
+
+RUN \
+usermod -u 99 nobody && \
+usermod -g 100 nobody && \
+usermod -d /home nobody && \
+chown -R nobody:users /home
+
+RUN mkdir -p /config && \
+chown -R nobody:users /config && \
+chmod 755 -R /config
 
 RUN set -ex \
  && apk update \
@@ -60,6 +73,7 @@ RUN set -ex \
  && SYMFONY_ENV=prod composer install --no-dev -o --prefer-dist \
  && chown -R nobody:nobody /var/www/wallabag
 
+VOLUME ["/var/www/wallabag/app/config","/config"]
 EXPOSE 80
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["wallabag"]
